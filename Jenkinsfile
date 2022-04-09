@@ -1,16 +1,9 @@
 #!/usr/bin/env groovy
 
-library identifier: 'jenkins-shared-library@master', retriever: modernSCM(
-    [$class: 'GitSCMSource',
-     remote: 'https://gitlab.com/nanuchi/jenkins-shared-library.git',
-     credentialsId: 'gitlab-credentials'
-    ]
-)
-
 pipeline {
     agent any
     tools {
-        maven 'Maven'
+    
     }
     environment {
         IMAGE_NAME = 'nanajanashia/demo-app:java-maven-2.0'
