@@ -13,6 +13,10 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'nanajanashia/demo-app:java-maven-2.0'
+                TF_VAR_env_prefix = 'test'
+                AWS_ACCESS_KEY_ID     = "${params.AWS_ACCESS_KEY_ID}"
+                AWS_SECRET_ACCESS_KEY = "${params.AWS_SECRET_ACCESS_KEY}"
+            
   
     }
     stages {
@@ -33,11 +37,7 @@ pipeline {
             }
         }
         stage('provision server') {
-            environment {
-                TF_VAR_env_prefix = 'test'
-                AWS_ACCESS_KEY_ID     = "${params.AWS_ACCESS_KEY_ID}"
-                AWS_SECRET_ACCESS_KEY = "${params.AWS_SECRET_ACCESS_KEY}"
-            }
+
             steps {
                 script {
                     dir('terraform') {
@@ -72,6 +72,15 @@ pipeline {
                 //        sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ${ec2Instance}:/home/ec2-user"
                 //        sh "ssh -o StrictHostKeyChecking=no ${ec2Instance} ${shellCmd}"
                 //    }
+                }
+            }
+        }
+        stage('Destroy) {
+            steps {
+                script {
+                   dir('terraform') {
+                        sh "terraform destroy --auto-approve"
+                  
                 }
             }
         }
