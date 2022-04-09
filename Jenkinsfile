@@ -75,7 +75,7 @@ pipeline {
                 }
             }
         }
-        stage('Destroy) {
+        stage('Destroy') {
             steps {
                 script {
                    dir('terraform') {
