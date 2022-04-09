@@ -54,6 +54,7 @@ pipeline {
         stage('deploy') {
             environment {
                 //DOCKER_CREDS = credentials('docker-hub-repo')
+                TF_VAR_env_prefix = 'test'
             }
             steps {
                 script {
