@@ -2,8 +2,18 @@
 
 pipeline {
     agent any
+
+        parameters {
+        string(name: 'environment', defaultValue: 'default', description: 'Workspace/environment file to use for deployment')
+        string(name: 'version', defaultValue: '', description: 'Version variable to pass to Terraform')
+        password (name: 'AWS_ACCESS_KEY_ID')
+        password (name: 'AWS_SECRET_ACCESS_KEY')
+        booleanParam(name: 'autoApprove', defaultValue: false, description: 'Automatically run apply after generating plan?')
+    }
+
     environment {
         IMAGE_NAME = 'nanajanashia/demo-app:java-maven-2.0'
+  
     }
     stages {
         stage('build app') {
@@ -24,9 +34,9 @@ pipeline {
         }
         stage('provision server') {
             environment {
-                AWS_ACCESS_KEY_ID = credentials('jenkins_aws_access_key_id')
-                AWS_SECRET_ACCESS_KEY = credentials('jenkins_aws_secret_access_key')
                 TF_VAR_env_prefix = 'test'
+                AWS_ACCESS_KEY_ID     = "${params.AWS_ACCESS_KEY_ID}"
+                AWS_SECRET_ACCESS_KEY = "${params.AWS_SECRET_ACCESS_KEY}"
             }
             steps {
                 script {
@@ -43,7 +53,7 @@ pipeline {
         }
         stage('deploy') {
             environment {
-                DOCKER_CREDS = credentials('docker-hub-repo')
+                //DOCKER_CREDS = credentials('docker-hub-repo')
             }
             steps {
                 script {
